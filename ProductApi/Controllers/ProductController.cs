@@ -17,6 +17,9 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public IActionResult Create(Product product)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         ProductRepository.Add(product);
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
@@ -24,6 +27,9 @@ public class ProductsController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Update(int id, Product product)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         return ProductRepository.Update(id, product) ? NoContent() : NotFound();
     }
 
