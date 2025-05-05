@@ -21,6 +21,15 @@ public static class ProductRepository
 
     public static Product? GetById(int id) => Products.FirstOrDefault(p => p.Id == id);
 
+    public static List<Product> Search(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            throw new ArgumentException("Query parameter is required.", nameof(query));
+
+        return Products.Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                                   p.Description.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+
     public static void Add(Product product)
     {
         product.Id = Products.Max(p => p.Id) + 1;

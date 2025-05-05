@@ -14,6 +14,20 @@ public class ProductsController : ControllerBase
         return product != null ? Ok(product) : NotFound();
     }
 
+    [HttpGet("search")]
+    public IActionResult Search([FromQuery] string query)
+    {
+        try
+        {
+            var products = ProductRepository.Search(query);
+            return Ok(products);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpPost]
     public IActionResult Create(Product product)
     {
