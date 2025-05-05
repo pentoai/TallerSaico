@@ -32,4 +32,31 @@ public class ProductsController : ControllerBase
     {
         return ProductRepository.Delete(id) ? NoContent() : NotFound();
     }
+
+    [HttpPost("{id}/apply-discount")]
+    public ActionResult<Product> ApplyDiscount(int id, [FromBody] DiscountRequest request)
+    {
+        var product = ProductRepository.GetById(id);
+        if (product == null)
+            return NotFound();
+
+        decimal discount = 0;
+
+        if (request.CustomerType?.ToLower() == "premium")
+            discount += 0.10m;
+
+        if (request.Season?.ToLower() == "summer")
+            discount += 0.05m;
+
+        var discountedProduct = new Product
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Quantity = product.Quantity,
+            Price = product.Price * (1 - discount)
+        };
+
+        return Ok(discountedProduct);
+    }
 }
